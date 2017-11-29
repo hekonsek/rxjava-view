@@ -1,40 +1,23 @@
-# RxJava Kafka connector
+# Materialized view extensions to RxJava 
 
-[![Version](https://img.shields.io/badge/RxJava%20Connector%20Kafka-0.2-blue.svg)](https://github.com/hekonsek/rxjava-connector-kafka/releases)
-[![Build](https://api.travis-ci.org/hekonsek/rxjava-connector-kafka.svg)](https://travis-ci.org/hekonsek/rxjava-connector-kafka)
+[![Version](https://img.shields.io/badge/RxJava%20view-0.0-blue.svg)](https://github.com/hekonsek/rxjava-view/releases)
+[![Build](https://api.travis-ci.org/hekonsek/rxjava-view.svg)](https://travis-ci.org/hekonsek/rxjava-view)
 
-Connector between RxJava events and [Apache Kafka](https://kafka.apache.org) cluster.
+This project provides materialized view extensions to RxJava. It allows you to generate (and access) materialized views from 
+stream of events.
 
-## Installation
-
-In order to start using Vert.x Pipes add the following dependency to your Maven project:
-
-    <dependency>
-      <groupId>com.github.hekonsek</groupId>
-      <artifactId>vertx-connector-kafka</artifactId>
-      <version>0.2</version>
-    </dependency>
+Right now RxJava View project supports the following types of materialized views:
+- document views (i.e. mapping stream  of events into persistence store supporting JSON-like data types)
 
 ## Usage
 
-This is how you can start consuming messages from Kafka topic:
+In order to start using in-memory document view, add an appropriate dependency to your Maven project:
 
-```
-import static com.github.hekonsek.rxjava.connector.kafka.KafkaEventAdapter.simpleMapping;
-import static com.github.hekonsek.rxjava.connector.kafka.KafkaHeaders.partition;
-import static com.github.hekonsek.rxjava.event.Headers.address;
-import static com.github.hekonsek.rxjava.event.Headers.key;
-...
-
-new KafkaSource<String, String>(vertx(), topic).
-  eventAdapter(simpleMapping(StringDeserializer.class, StringDeserializer.class)).build().
-  subscribe(event -> {
-    String payload = event.payload();
-    String key = key(event);
-    String topic = address(event);
-    int partition = partition(event);
-  });
-```
+    <dependency>
+      <groupId>com.github.hekonsek</groupId>
+      <artifactId>vertx-view-memory</artifactId>
+      <version>0.0</version>
+    </dependency>
 
 ## License
 
