@@ -274,8 +274,8 @@
 
     <!-- Required by Sonatype release -->
 
-    <description>rxjava-connector-kafka</description>
-    <url>https://github.com/hekonsek/rxjava-connector-kafka</url>
+    <description>rxjava-view</description>
+    <url>https://github.com/hekonsek/rxjava-view</url>
 
     <developers>
         <developer>
@@ -285,9 +285,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git@github.com:hekonsek/rxjava-connector-kafka.git</connection>
-        <developerConnection>scm:git:git@github.com:hekonsek/rxjava-connector-kafka.git</developerConnection>
-        <url>git@github.com:hekonsek/rxjava-connector-kafka.git</url>
+        <connection>scm:git:git@github.com:hekonsek/rxjava-view.git</connection>
+        <developerConnection>scm:git:git@github.com:hekonsek/rxjava-view.git</developerConnection>
+        <url>git@github.com:hekonsek/rxjava-view.git</url>
         <tag>HEAD</tag>
     </scm>
 
