@@ -40,96 +40,24 @@
     <modules>
         <module>core</module>
         <module>memory</module>
+        <module>elasticsearch</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
             <!-- Aligning transitive versions. -->
             <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>1.2.17</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>1.7.25</version>
-            </dependency>
-            <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
                 <version>2.9.0</version>
             </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.9.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.github.hekonsek</groupId>
-            <artifactId>rxjava-event</artifactId>
-            <version>0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-kafka-client</artifactId>
-            <version>${vertx.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-rx-java2</artifactId>
-            <version>${vertx.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
-        </dependency>
-
-        <!-- Testing -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.2.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.debezium</groupId>
-            <artifactId>debezium-core</artifactId>
-            <version>${debezium.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.debezium</groupId>
-            <artifactId>debezium-core</artifactId>
-            <type>test-jar</type>
-            <version>${debezium.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-unit</artifactId>
-            <version>${vertx.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>${assertj.version}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
 
     <build>
         <defaultGoal>clean install</defaultGoal>
