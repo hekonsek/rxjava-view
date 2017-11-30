@@ -2,6 +2,7 @@
 
 [![Version](https://img.shields.io/badge/RxJava%20view-0.0-blue.svg)](https://github.com/hekonsek/rxjava-view/releases)
 [![Build](https://api.travis-ci.org/hekonsek/rxjava-view.svg)](https://travis-ci.org/hekonsek/rxjava-view)
+[![Coverage](https://sonarcloud.io/api/badges/measure?key=com.github.hekonsek%3Arxjava-event&metric=coverage)](https://sonarcloud.io/component_measures?id=com.github.hekonsek%3Arxjava-event&metric=coverage)
 
 This project provides materialized view extensions to RxJava. It allows you to generate (and access) materialized views from 
 stream of events.
