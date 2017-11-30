@@ -1,5 +1,7 @@
 package com.github.hekonsek.rxjava.view.document;
 
+import com.google.common.collect.ImmutableMap;
+
 import java.util.Map;
 
 public class DocumentWithKey {
@@ -10,7 +12,7 @@ public class DocumentWithKey {
 
     public DocumentWithKey(String key, Map<String, Object> document) {
         this.key = key;
-        this.document = document;
+        this.document = ImmutableMap.copyOf(document);
     }
 
     public String key() {
