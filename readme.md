@@ -7,15 +7,18 @@
 This project provides materialized view extensions to RxJava. It allows you to generate (and access) materialized views from 
 stream of events.
 
+## Documentation
+
 Right now RxJava View project supports the following types of materialized views:
 - document views (i.e. mapping stream  of events into persistence store supporting JSON-like data types)
 
-## Usage
-
 ### Document views
 
-First of all in order to start using in-memory document view, add an appropriate dependency to your Maven project. For example for in-memory
-document view:
+Document views materialize incoming events into a persistence engined based on documents i.e. JSON-like data types. It could be MongoDB, 
+PostgreSQL JSON, Cassandra, ElasticSearch and many more. Document views operate on Java maps as a way to represent documents.
+
+First of all in order to start using document view, add an appropriate dependency to your Maven project. For example for in-memory
+document view add the following entry:
 
 ```                 
 <dependency>
@@ -25,7 +28,7 @@ document view:
 </dependency>
 ```
 
-Or for ElasticSearch document view:
+Or the following one for ElasticSearch document view:
 
 ```                 
 <dependency>
@@ -47,7 +50,8 @@ Observable.just(1, 2, 3).
 If you would like to count the number of documents in materialized collection, use the following code:
 
 ```
-materializedView.count("numbers").subscribe(count -> assertThat(count).isEqualTo(3));
+materializedView.count("numbers").
+  subscribe(count -> assertThat(count).isEqualTo(3));
 ```
 
 ## License
