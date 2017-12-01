@@ -1,6 +1,6 @@
 # Materialized view extensions to RxJava 
 
-[![Version](https://img.shields.io/badge/RxJava%20view-0.1-blue.svg)](https://github.com/hekonsek/rxjava-view/releases)
+[![Version](https://img.shields.io/badge/RxJava%20view-0.2-blue.svg)](https://github.com/hekonsek/rxjava-view/releases)
 [![Build](https://api.travis-ci.org/hekonsek/rxjava-view.svg)](https://travis-ci.org/hekonsek/rxjava-view)
 [![Coverage](https://sonarcloud.io/api/badges/measure?key=com.github.hekonsek%3Arxjava-view&metric=coverage)](https://sonarcloud.io/component_measures?id=com.github.hekonsek%3Arxjava-view&metric=coverage)
 
@@ -24,7 +24,7 @@ document view add the following entry:
 <dependency>
   <groupId>com.github.hekonsek</groupId>
   <artifactId>vertx-view-memory</artifactId>
-  <version>0.1</version>
+  <version>0.2</version>
 </dependency>
 ```
 
@@ -34,7 +34,7 @@ Or the following one for ElasticSearch document view:
 <dependency>
   <groupId>com.github.hekonsek</groupId>
   <artifactId>vertx-view-elasticsearch</artifactId>
-  <version>0.1</version>
+  <version>0.2</version>
 </dependency>
 ```
 
