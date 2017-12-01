@@ -12,21 +12,24 @@ import org.junit.runner.RunWith;
 import pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static java.util.Collections.emptyMap;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static pl.allegro.tech.embeddedelasticsearch.PopularProperties.CLUSTER_NAME;
 import static pl.allegro.tech.embeddedelasticsearch.PopularProperties.TRANSPORT_TCP_PORT;
 
 @RunWith(VertxUnitRunner.class)
 public class ElasticSearchDocumentViewTest {
 
-    DocumentView view = new ElasticSearchDocumentView();
+    DocumentView view = new ElasticSearchDocumentView().start();
 
     String collection = UUID.randomUUID().toString();
 
@@ -43,6 +46,24 @@ public class ElasticSearchDocumentViewTest {
                 .withEsJavaOpts("-Xms128m -Xmx512m")
                 .withStartTimeout(1, MINUTES)
                 .build().start();
+    }
+
+    @Test(timeout = 5000)
+    public void shouldValidateInvalidHost() {
+        try {
+            new ElasticSearchDocumentView().host("someRandomHost").start();
+        } catch (RuntimeException e) {
+            assertThat(e.getCause() instanceof UnknownHostException);
+            return;
+        }
+        fail("Exception expected");
+    }
+
+    @Test(timeout = 5000)
+    public void shouldHandleInvalidPortOnSave(TestContext context) {
+        Async async = context.async();
+        new ElasticSearchDocumentView().port(9999).start().
+                save(collection, key, emptyMap()).doOnError(e -> async.complete()).subscribe();
     }
 
     @Test

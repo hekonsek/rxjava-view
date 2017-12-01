@@ -27,9 +27,12 @@ import static io.reactivex.Observable.fromIterable;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
+/**
+ * Document-based materialized view based on ElasticSearch documents.
+ */
 public class ElasticSearchDocumentView implements DocumentView {
 
-    private final Client client;
+    private Client client;
 
     private String clusterName = "default";
 
@@ -37,29 +40,38 @@ public class ElasticSearchDocumentView implements DocumentView {
 
     private int port = 9300;
 
-    public ElasticSearchDocumentView() {
+    // Life-cycle
+
+    public ElasticSearchDocumentView start() {
         try {
             Settings settings = Settings.builder().put("cluster.name", clusterName).build();
             client = new PreBuiltTransportClient(settings)
                     .addTransportAddress(new TransportAddress(InetAddress.getByName(host), port));
+            return this;
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
         }
     }
 
+    // Overridden operations
+
     @Override public Completable save(String collection, String key, Map<String, Object> document) {
         return new Completable() {
             @Override protected void subscribeActual(CompletableObserver observer) {
-                client.prepareIndex(collection, "default", key).setSource(document).execute(new ActionListener<IndexResponse>() {
+                try {
+                    client.prepareIndex(collection, "default", key).setSource(document).execute(new ActionListener<IndexResponse>() {
 
-                    @Override public void onResponse(IndexResponse indexResponse) {
-                        observer.onComplete();
-                    }
+                        @Override public void onResponse(IndexResponse indexResponse) {
+                            observer.onComplete();
+                        }
 
-                    @Override public void onFailure(Exception e) {
-                        observer.onError(e);
-                    }
-                });
+                        @Override public void onFailure(Exception e) {
+                            observer.onError(e);
+                        }
+                    });
+                } catch (Throwable e) {
+                    observer.onError(e);
+                }
             }
         };
     }
