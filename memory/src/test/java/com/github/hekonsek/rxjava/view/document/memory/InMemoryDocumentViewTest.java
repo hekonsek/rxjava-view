@@ -2,6 +2,8 @@ package com.github.hekonsek.rxjava.view.document.memory;
 
 import com.github.hekonsek.rxjava.view.document.DocumentView;
 import com.github.hekonsek.rxjava.view.document.DocumentWithKey;
+import com.google.common.collect.ImmutableMap;
+import io.reactivex.internal.operators.maybe.MaybeObserveOn;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
@@ -25,11 +27,9 @@ public class InMemoryDocumentViewTest {
 
     String key = UUID.randomUUID().toString();
 
-    Map<String, Object> document = new LinkedHashMap<>();
+    Map<String, Object> document = ImmutableMap.of("foo", "bar");
 
-    {
-        document.put("foo", "bar");
-    }
+    // Tests
 
     @Test
     public void shouldSave(TestContext context) {
@@ -46,6 +46,12 @@ public class InMemoryDocumentViewTest {
     public void shouldCallSubscriberOnSave(TestContext context) {
         Async async = context.async();
         view.save(collection, key, document).subscribe(async::complete);
+    }
+
+    @Test(timeout = 5000)
+    public void shouldFindEmptyById(TestContext context) {
+        Async async = context.async();
+        view.findById(collection, key).doOnComplete(async::complete).subscribe();
     }
 
     @Test

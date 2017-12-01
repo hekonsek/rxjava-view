@@ -57,6 +57,20 @@ public class ElasticSearchDocumentViewTest {
         );
     }
 
+    @Test(timeout = 5000)
+    public void shouldFindEmptyById(TestContext context) {
+        Async async = context.async();
+        view.save(collection, key, document).subscribe(() ->
+                view.findById(collection, "someRandomKey").doOnComplete(async::complete).subscribe()
+        );
+    }
+
+    @Test(timeout = 5000)
+    public void shouldFindEmptyFromUnknownIndex(TestContext context) {
+        Async async = context.async();
+        view.findById(collection, key).doOnComplete(async::complete).subscribe();
+    }
+
     @Test
     public void shouldCallSubscriberOnSave(TestContext context) {
         Async async = context.async();

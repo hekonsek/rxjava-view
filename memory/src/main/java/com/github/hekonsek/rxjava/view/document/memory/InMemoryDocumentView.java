@@ -3,6 +3,7 @@ package com.github.hekonsek.rxjava.view.document.memory;
 import com.github.hekonsek.rxjava.view.document.DocumentView;
 import com.github.hekonsek.rxjava.view.document.DocumentWithKey;
 import io.reactivex.Completable;
+import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
@@ -11,8 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 import static io.reactivex.Completable.complete;
+import static io.reactivex.Maybe.empty;
 import static io.reactivex.Observable.fromIterable;
-import static io.reactivex.Single.just;
 import static java.util.stream.Collectors.toList;
 
 public class InMemoryDocumentView implements DocumentView {
@@ -25,14 +26,15 @@ public class InMemoryDocumentView implements DocumentView {
         return complete();
     }
 
-    @Override synchronized public Single<Map<String, Object>> findById(String collection, String key) {
+    @Override synchronized public Maybe<Map<String, Object>> findById(String collection, String key) {
         Map<String, Map<String, Object>> collectionData = documents.computeIfAbsent(collection, k -> new LinkedHashMap<>());
-        return just(collectionData.get(key));
+        Map<String, Object> result = collectionData.get(key);
+        return result != null ? Maybe.just(result) : empty();
     }
 
     @Override synchronized public Single<Long> count(String collection) {
         Map<String, Map<String, Object>> collectionData = documents.computeIfAbsent(collection, key -> new LinkedHashMap<>());
-        return just((long) collectionData.size());
+        return Single.just((long) collectionData.size());
     }
 
     @Override synchronized public Observable<DocumentWithKey> findAll(String collection) {
