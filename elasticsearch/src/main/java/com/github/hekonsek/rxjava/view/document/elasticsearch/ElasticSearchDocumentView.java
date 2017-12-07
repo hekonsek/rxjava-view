@@ -103,6 +103,8 @@ public class ElasticSearchDocumentView implements DocumentView {
             return result != null ? Maybe.just(result) : empty();
         } catch (IndexNotFoundException e) {
             return empty();
+        } catch (Exception e) {
+            return Maybe.error(e);
         }
     }
 

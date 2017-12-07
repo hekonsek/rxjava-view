@@ -22,8 +22,11 @@ import com.google.common.collect.ImmutableMap;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
 import pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic;
 
@@ -39,11 +42,15 @@ import static java.util.Collections.emptyMap;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.junit.rules.Timeout.seconds;
 import static pl.allegro.tech.embeddedelasticsearch.PopularProperties.CLUSTER_NAME;
 import static pl.allegro.tech.embeddedelasticsearch.PopularProperties.TRANSPORT_TCP_PORT;
 
 @RunWith(VertxUnitRunner.class)
 public class ElasticSearchDocumentViewTest {
+
+    @Rule
+    public Timeout timeout = seconds(10);
 
     DocumentView view = new ElasticSearchDocumentView().start();
 
@@ -53,9 +60,11 @@ public class ElasticSearchDocumentViewTest {
 
     Map<String, Object> document = ImmutableMap.of("foo", "bar", "timestamp", new Date());
 
+    static EmbeddedElastic embeddedElastic;
+
     @BeforeClass
     public static void beforeClass() throws IOException, InterruptedException {
-        EmbeddedElastic.builder()
+        embeddedElastic = EmbeddedElastic.builder()
                 .withElasticVersion("6.0.0")
                 .withSetting(TRANSPORT_TCP_PORT, 9300)
                 .withSetting(CLUSTER_NAME, "default")
@@ -64,7 +73,12 @@ public class ElasticSearchDocumentViewTest {
                 .build().start();
     }
 
-    @Test(timeout = 10000)
+    @AfterClass
+    public static void afterClass() {
+        embeddedElastic.stop();
+    }
+
+    @Test
     public void shouldValidateInvalidHost() {
         try {
             new ElasticSearchDocumentView().host("someRandomHost").start();
@@ -75,7 +89,7 @@ public class ElasticSearchDocumentViewTest {
         fail("Exception expected");
     }
 
-    @Test(timeout = 5000)
+    @Test
     public void shouldHandleInvalidPortOnSave(TestContext context) {
         Async async = context.async();
         new ElasticSearchDocumentView().port(9999).start().
@@ -94,7 +108,7 @@ public class ElasticSearchDocumentViewTest {
         );
     }
 
-    @Test(timeout = 5000)
+    @Test
     public void shouldFindEmptyById(TestContext context) {
         Async async = context.async();
         view.save(collection, key, document).subscribe(() ->
@@ -102,7 +116,7 @@ public class ElasticSearchDocumentViewTest {
         );
     }
 
-    @Test(timeout = 5000)
+    @Test
     public void shouldFindEmptyFromUnknownIndex(TestContext context) {
         Async async = context.async();
         view.findById(collection, key).doOnComplete(async::complete).subscribe();
@@ -127,7 +141,7 @@ public class ElasticSearchDocumentViewTest {
         );
     }
 
-    @Test(timeout = 5000)
+    @Test
     public void shouldFindAll(TestContext context) {
         Async async = context.async();
         view.save(collection, key, document).subscribe(() -> {
@@ -142,7 +156,7 @@ public class ElasticSearchDocumentViewTest {
         });
     }
 
-    @Test(timeout = 5000)
+    @Test
     public void shouldRemove(TestContext context) {
         Async async = context.async();
         view.save(collection, key, document).subscribe(() ->
