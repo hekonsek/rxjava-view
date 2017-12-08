@@ -23,7 +23,7 @@ document view add the following entry:
 ```                 
 <dependency>
   <groupId>com.github.hekonsek</groupId>
-  <artifactId>vertx-view-memory</artifactId>
+  <artifactId>rxjava-view-memory</artifactId>
   <version>0.2</version>
 </dependency>
 ```
@@ -33,7 +33,7 @@ Or the following one for ElasticSearch document view:
 ```                 
 <dependency>
   <groupId>com.github.hekonsek</groupId>
-  <artifactId>vertx-view-elasticsearch</artifactId>
+  <artifactId>rxjava-view-elasticsearch</artifactId>
   <version>0.2</version>
 </dependency>
 ```
@@ -41,16 +41,31 @@ Or the following one for ElasticSearch document view:
 You can use the following code to generate materialized view from an observable:
 
 ```
-Observable.just(1, 2, 3).
-  flatMap(it -> done -> 
-    materializedView.save("numbers", it + "", newHashMap("number", it)).subscribe(done::onComplete)
-  ).subscribe();
+import static com.github.hekonsek.rxjava.event.Events.event;
+import static com.github.hekonsek.rxjava.event.Headers.ADDRESS;
+import static com.github.hekonsek.rxjava.event.Headers.KEY;
+import static com.github.hekonsek.rxjava.view.document.MaterializeDocumentViewTransformation.materialize;
+
+...
+
+DocumentView view = new InMemoryDocumentView();
+
+Map<String, Object> document = ImmutableMap.of("foo", "bar", "timestamp", new Date());
+Map<String, Object> headers = ImmutableMap.of(ADDRESS, "collection", KEY, "key");
+Event<Map<String, Object>> event = event(headers, document);
+
+Observable.just(event).
+  compose(materialize(view)).subscribe();
 ```
+
+As you can see `materialize` transformation relies on [RxJava Event](https://github.com/hekonsek/rxjava-event) model conventions to dispatch
+incoming event into a proper collection with a proper key. In particular standard `address` and `key` headers of an incoming event are used to
+indicate target collection and event key respectively.
 
 If you would like to count the number of documents in materialized collection, use the following code:
 
 ```
-materializedView.count("numbers").
+materializedView.count("collection").
   subscribe(count -> assertThat(count).isEqualTo(3));
 ```
 
