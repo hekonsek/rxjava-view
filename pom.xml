@@ -12,7 +12,7 @@
     <groupId>com.github.hekonsek</groupId>
     <artifactId>rxjava-view</artifactId>
     <name>${project.artifactId}</name>
-    <version>0.3-SNAPSHOT</version>
+    <version>0.3</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -236,7 +236,7 @@
         <connection>scm:git:git@github.com:hekonsek/rxjava-view.git</connection>
         <developerConnection>scm:git:git@github.com:hekonsek/rxjava-view.git</developerConnection>
         <url>git@github.com:hekonsek/rxjava-view.git</url>
-        <tag>HEAD</tag>
+        <tag>rxjava-view-0.3</tag>
     </scm>
 
     <distributionManagement>
