@@ -37,7 +37,6 @@ import java.net.UnknownHostException;
 import java.util.Map;
 
 import static io.reactivex.Completable.complete;
-import static io.reactivex.Maybe.empty;
 import static io.reactivex.Observable.fromIterable;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
@@ -66,7 +65,7 @@ public class ElasticSearchDocumentView implements DocumentView {
             client.addTransportAddress(new TransportAddress(InetAddress.getByName(host), port));
             return this;
         } catch (UnknownHostException e) {
-            if(client != null) {
+            if (client != null) {
                 client.close();
             }
             throw new RuntimeException(e);
@@ -97,15 +96,25 @@ public class ElasticSearchDocumentView implements DocumentView {
     }
 
     @Override public Maybe<Map<String, Object>> findById(String collection, String key) {
-        try {
-            GetResponse response = client.prepareGet(collection, "default", key).get();
-            Map<String, Object> result = response.getSource();
-            return result != null ? Maybe.just(result) : empty();
-        } catch (IndexNotFoundException e) {
-            return empty();
-        } catch (Exception e) {
-            return Maybe.error(e);
-        }
+        return Maybe.create(subscription -> client.prepareGet(collection, "default", key).execute(new ActionListener<GetResponse>() {
+
+            @Override public void onResponse(GetResponse documentFields) {
+                Map<String, Object> result = documentFields.getSource();
+                if(result != null ) {
+                    subscription.onSuccess(result);
+                } else {
+                    subscription.onComplete();
+                }
+            }
+
+            @Override public void onFailure(Exception e) {
+                if(e.getCause() != null &&  IndexNotFoundException.class.isAssignableFrom(e.getCause().getClass())) {
+                    subscription.onComplete();
+                    return;
+                }
+                subscription.onError(e);
+            }
+        }));
     }
 
     @Override public Single<Long> count(String collection) {

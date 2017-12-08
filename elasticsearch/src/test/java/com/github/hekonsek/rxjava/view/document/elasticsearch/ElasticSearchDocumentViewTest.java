@@ -18,6 +18,7 @@ package com.github.hekonsek.rxjava.view.document.elasticsearch;
 
 import com.github.hekonsek.rxjava.view.document.DocumentView;
 import com.github.hekonsek.rxjava.view.document.DocumentWithKey;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
@@ -145,14 +146,15 @@ public class ElasticSearchDocumentViewTest {
     public void shouldFindAll(TestContext context) {
         Async async = context.async();
         view.save(collection, key, document).subscribe(() -> {
-            List<DocumentWithKey> documents = new LinkedList<>();
-            view.findById(collection, key).subscribe(document ->
-                    view.findAll(collection).subscribe(documents::add)
+            new LinkedList<>();
+            view.findById(collection, key).subscribe(document -> {
+                        List<DocumentWithKey> documents = ImmutableList.copyOf(view.findAll(collection).blockingIterable());
+                        assertThat(documents).hasSize(1);
+                        assertThat(documents.get(0).key()).isEqualTo(key);
+                        assertThat(documents.get(0).document().get("foo")).isEqualTo("bar");
+                        async.complete();
+                    }
             );
-            assertThat(documents).hasSize(1);
-            assertThat(documents.get(0).key()).isEqualTo(key);
-            assertThat(documents.get(0).document().get("foo")).isEqualTo("bar");
-            async.complete();
         });
     }
 
