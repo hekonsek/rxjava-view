@@ -15,7 +15,7 @@ import static com.github.hekonsek.rxjava.failable.FailableFlatMap.failable;
 
 public class MaterializeDocumentViewTransformation implements ObservableTransformer<Event<Map<String, Object>>, Object> {
 
-    private final static Logger LOG = LoggerFactory.getLogger(MaterializeDocumentViewTransformation.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MaterializeDocumentViewTransformation.class);
 
     private final DocumentView view;
 
