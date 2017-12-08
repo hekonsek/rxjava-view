@@ -17,26 +17,20 @@
 package com.github.hekonsek.rxjava.view.document.elasticsearch;
 
 import com.github.hekonsek.rxjava.event.Event;
-import com.github.hekonsek.rxjava.event.Events;
-import com.github.hekonsek.rxjava.view.document.DocumentView;
-import com.github.hekonsek.rxjava.view.document.DocumentWithKey;
 import com.google.common.collect.ImmutableMap;
-import io.reactivex.Observable;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
 import pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic;
 
 import java.io.IOException;
-import java.net.UnknownHostException;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -45,10 +39,8 @@ import static com.github.hekonsek.rxjava.event.Headers.ADDRESS;
 import static com.github.hekonsek.rxjava.event.Headers.KEY;
 import static com.github.hekonsek.rxjava.view.document.elasticsearch.ElasticSearchDocumentViewSaveTransformation.save;
 import static io.reactivex.Observable.just;
-import static java.util.Collections.emptyMap;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 import static org.junit.rules.Timeout.seconds;
 import static pl.allegro.tech.embeddedelasticsearch.PopularProperties.CLUSTER_NAME;
 import static pl.allegro.tech.embeddedelasticsearch.PopularProperties.TRANSPORT_TCP_PORT;
@@ -56,6 +48,7 @@ import static pl.allegro.tech.embeddedelasticsearch.PopularProperties.TRANSPORT_
 @RunWith(VertxUnitRunner.class)
 public class ElasticSearchDocumentViewTransformationsTest {
 
+    @Rule
     public Timeout timeout = seconds(5);
 
     ElasticSearchDocumentView view = new ElasticSearchDocumentView().start();
@@ -95,6 +88,16 @@ public class ElasticSearchDocumentViewTransformationsTest {
                     assertThat(document.get("timestamp")).isNotNull();
                     async.complete();
                 })
+        ).subscribe();
+    }
+
+    @Test
+    public void shouldRemove(TestContext context) {
+        Async async = context.async();
+        just(event).compose(save(view)).doOnComplete(() ->
+                just(event.withPayload(null)).compose(save(view)).doOnComplete(() ->
+                        view.findById(collection, key).doOnComplete(async::complete).subscribe()
+                ).subscribe()
         ).subscribe();
     }
 

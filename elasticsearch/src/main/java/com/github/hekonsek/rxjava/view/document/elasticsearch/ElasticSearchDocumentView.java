@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,6 +24,7 @@ import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import org.elasticsearch.action.ActionListener;
+import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
@@ -36,7 +37,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
 
-import static io.reactivex.Completable.complete;
 import static io.reactivex.Observable.fromIterable;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
@@ -76,6 +76,7 @@ public class ElasticSearchDocumentView implements DocumentView {
 
     @Override public Completable save(String collection, String key, Map<String, Object> document) {
         return new Completable() {
+
             @Override protected void subscribeActual(CompletableObserver observer) {
                 try {
                     client.prepareIndex(collection, "default", key).setSource(document).execute(new ActionListener<IndexResponse>() {
@@ -100,7 +101,7 @@ public class ElasticSearchDocumentView implements DocumentView {
 
             @Override public void onResponse(GetResponse documentFields) {
                 Map<String, Object> result = documentFields.getSource();
-                if(result != null ) {
+                if (result != null) {
                     subscription.onSuccess(result);
                 } else {
                     subscription.onComplete();
@@ -108,7 +109,7 @@ public class ElasticSearchDocumentView implements DocumentView {
             }
 
             @Override public void onFailure(Exception e) {
-                if(e.getCause() != null &&  IndexNotFoundException.class.isAssignableFrom(e.getCause().getClass())) {
+                if (e.getCause() != null && IndexNotFoundException.class.isAssignableFrom(e.getCause().getClass())) {
                     subscription.onComplete();
                     return;
                 }
@@ -129,8 +130,21 @@ public class ElasticSearchDocumentView implements DocumentView {
     }
 
     @Override public Completable remove(String collection, String key) {
-        client.prepareDelete(collection, "default", key).get();
-        return complete();
+        return new Completable() {
+
+            @Override protected void subscribeActual(CompletableObserver observer) {
+                client.prepareDelete(collection, "default", key).execute(new ActionListener<DeleteResponse>() {
+
+                    @Override public void onResponse(DeleteResponse deleteResponse) {
+                        observer.onComplete();
+                    }
+
+                    @Override public void onFailure(Exception e) {
+                        observer.onError(e);
+                    }
+                });
+            }
+        };
     }
 
     // Setters

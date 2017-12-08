@@ -13,7 +13,7 @@ import static com.github.hekonsek.rxjava.event.Headers.address;
 import static com.github.hekonsek.rxjava.event.Headers.key;
 import static com.github.hekonsek.rxjava.failable.FailableFlatMap.failable;
 
-public class ElasticSearchDocumentViewSaveTransformation implements ObservableTransformer<Event<Map<String,Object>>,Object> {
+public class ElasticSearchDocumentViewSaveTransformation implements ObservableTransformer<Event<Map<String, Object>>, Object> {
 
     private final static Logger LOG = LoggerFactory.getLogger(ElasticSearchDocumentViewSaveTransformation.class);
 
@@ -29,9 +29,15 @@ public class ElasticSearchDocumentViewSaveTransformation implements ObservableTr
 
     @Override public ObservableSource<Object> apply(Observable<Event<Map<String, Object>>> events) {
         return events.compose(failable(
-                event -> view.save(address(event), key(event), event.payload()).toObservable(),
+                event -> {
+                    if (event.payload() != null) {
+                        return view.save(address(event), key(event), event.payload()).toObservable();
+                    } else {
+                        return view.remove(address(event), key(event)).toObservable();
+                    }
+                },
                 failure -> LOG.info("Failed to save document: " + failure.value(), failure.cause())
-                ));
+        ));
     }
 
 }
