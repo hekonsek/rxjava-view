@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * <p>
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,6 +28,7 @@ import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.index.IndexNotFoundException;
@@ -45,6 +46,8 @@ import static java.util.stream.Collectors.toList;
  * Document-based materialized view based on ElasticSearch documents.
  */
 public class ElasticSearchDocumentView implements DocumentView {
+
+    // Collaborators
 
     private PreBuiltTransportClient client;
 
@@ -162,6 +165,12 @@ public class ElasticSearchDocumentView implements DocumentView {
     public ElasticSearchDocumentView port(int port) {
         this.port = port;
         return this;
+    }
+
+    // Getters
+
+    public Client client() {
+        return client;
     }
 
 }
