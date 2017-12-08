@@ -20,11 +20,12 @@ set -e
 OLD_VERSION="${1}"
 NEW_VERSION="${2}"
 
-if [ -z "${OLD_VERSION}" ] || [ -z "${NEW_VERSION}" ]; then
-    echo 'Please specify the latest and the new version of RxJava View. For example:'
-    echo
-    echo '  release.sh 0.0.5 0.0.6'
-    exit
+if [ -z "${OLD_VERSION}" ]; then
+    OLD_VERSION=`git tag | tail -1 | sed 's/.*-//g'`
+    if [ -z "${OLD_VERSION}" ]; then
+        OLD_VERSION='0.0'
+        NEW_VERSION='0.0'
+    fi
 fi
 
 mvn -Darguments="-Dmaven.test.skip=true -Dgpg.passphrase=${GPG_PASSWORD}" release:prepare release:perform
