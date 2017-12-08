@@ -18,18 +18,7 @@
     <name>${project.artifactId}</name>
 
     <properties>
-        <!-- General project settings -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
-
-        <!-- Plugins versions -->
-        <maven-enforcer-plugin.version>3.0.0-M1</maven-enforcer-plugin.version>
-        <maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
-        <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
-        <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
-        <maven-source-plugin.version>2.4</maven-source-plugin.version>
-        <nexus-staging-maven-plugin.version>1.6.5</nexus-staging-maven-plugin.version>
+        <elasticsearch.version>6.0.0</elasticsearch.version>
     </properties>
 
     <dependencyManagement>
@@ -74,21 +63,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.25</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.hekonsek</groupId>
-            <artifactId>rxjava-event</artifactId>
-            <version>0.5</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.hekonsek</groupId>
-            <artifactId>rxjava-failable</artifactId>
-            <version>0.2</version>
-        </dependency>
-        <dependency>
             <groupId>com.github.hekonsek</groupId>
             <artifactId>rxjava-view-core</artifactId>
             <version>${project.version}</version>
@@ -96,14 +70,13 @@
         <dependency>
             <groupId>org.elasticsearch.client</groupId>
             <artifactId>transport</artifactId>
-            <version>6.0.0</version>
+            <version>${elasticsearch.version}</version>
         </dependency>
 
         <!-- Testing -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -115,13 +88,11 @@
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-unit</artifactId>
-            <version>${vertx.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>${assertj.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

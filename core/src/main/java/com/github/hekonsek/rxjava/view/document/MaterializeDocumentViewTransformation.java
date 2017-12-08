@@ -1,4 +1,4 @@
-package com.github.hekonsek.rxjava.view.document.elasticsearch;
+package com.github.hekonsek.rxjava.view.document;
 
 import com.github.hekonsek.rxjava.event.Event;
 import io.reactivex.Observable;
@@ -13,18 +13,18 @@ import static com.github.hekonsek.rxjava.event.Headers.address;
 import static com.github.hekonsek.rxjava.event.Headers.key;
 import static com.github.hekonsek.rxjava.failable.FailableFlatMap.failable;
 
-public class ElasticSearchDocumentViewSaveTransformation implements ObservableTransformer<Event<Map<String, Object>>, Object> {
+public class MaterializeDocumentViewTransformation implements ObservableTransformer<Event<Map<String, Object>>, Object> {
 
-    private final static Logger LOG = LoggerFactory.getLogger(ElasticSearchDocumentViewSaveTransformation.class);
+    private final static Logger LOG = LoggerFactory.getLogger(MaterializeDocumentViewTransformation.class);
 
-    private final ElasticSearchDocumentView view;
+    private final DocumentView view;
 
-    public ElasticSearchDocumentViewSaveTransformation(ElasticSearchDocumentView view) {
+    public MaterializeDocumentViewTransformation(DocumentView view) {
         this.view = view;
     }
 
-    public static ElasticSearchDocumentViewSaveTransformation save(ElasticSearchDocumentView view) {
-        return new ElasticSearchDocumentViewSaveTransformation(view);
+    public static MaterializeDocumentViewTransformation materialize(DocumentView view) {
+        return new MaterializeDocumentViewTransformation(view);
     }
 
     @Override public ObservableSource<Object> apply(Observable<Event<Map<String, Object>>> events) {

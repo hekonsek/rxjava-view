@@ -37,7 +37,7 @@ import java.util.UUID;
 import static com.github.hekonsek.rxjava.event.Events.event;
 import static com.github.hekonsek.rxjava.event.Headers.ADDRESS;
 import static com.github.hekonsek.rxjava.event.Headers.KEY;
-import static com.github.hekonsek.rxjava.view.document.elasticsearch.ElasticSearchDocumentViewSaveTransformation.save;
+import static com.github.hekonsek.rxjava.view.document.MaterializeDocumentViewTransformation.materialize;
 import static io.reactivex.Observable.just;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -82,7 +82,7 @@ public class ElasticSearchDocumentViewTransformationsTest {
     @Test
     public void shouldSave(TestContext context) {
         Async async = context.async();
-        just(event).compose(save(view)).doOnComplete(() ->
+        just(event).compose(materialize(view)).doOnComplete(() ->
                 view.findById(collection, key).subscribe(document -> {
                     assertThat(document.get("foo")).isEqualTo("bar");
                     assertThat(document.get("timestamp")).isNotNull();
@@ -94,8 +94,8 @@ public class ElasticSearchDocumentViewTransformationsTest {
     @Test
     public void shouldRemove(TestContext context) {
         Async async = context.async();
-        just(event).compose(save(view)).doOnComplete(() ->
-                just(event.withPayload(null)).compose(save(view)).doOnComplete(() ->
+        just(event).compose(materialize(view)).doOnComplete(() ->
+                just(event.withPayload(null)).compose(materialize(view)).doOnComplete(() ->
                         view.findById(collection, key).doOnComplete(async::complete).subscribe()
                 ).subscribe()
         ).subscribe();
