@@ -34,7 +34,7 @@ Or the following one for ElasticSearch document view:
 <dependency>
   <groupId>com.github.hekonsek</groupId>
   <artifactId>rxjava-view-elasticsearch</artifactId>
-  <version></version>
+  <version>0.3</version>
 </dependency>
 ```
 
