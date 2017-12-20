@@ -1,4 +1,4 @@
-# Materialized view extensions to RxJava 
+# Materialized view extensions for RxJava 
 
 [![Version](https://img.shields.io/badge/RxJava%20view-0.3-blue.svg)](https://github.com/hekonsek/rxjava-view/releases)
 [![Build](https://api.travis-ci.org/hekonsek/rxjava-view.svg)](https://travis-ci.org/hekonsek/rxjava-view)
