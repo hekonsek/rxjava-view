@@ -26,7 +26,9 @@
         <guava.version>23.5-jre</guava.version>
         <junit.version>4.12</junit.version>
         <logback.version>1.2.3</logback.version>
+        <mockito.version>2.12.0</mockito.version>
         <rxjava-event.version>0.7</rxjava-event.version>
+        <slf4j.version>1.7.25</slf4j.version>
         <vertx.version>3.5.0</vertx.version>
 
         <!-- Plugins versions -->
@@ -46,6 +48,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.github.hekonsek</groupId>
                 <artifactId>rxjava-event</artifactId>
@@ -72,9 +79,15 @@
                 <version>${assertj.version}</version>
             </dependency>
             <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>${logback.version}</version>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
             </dependency>
 
             <!-- Aligning transitive versions. -->
