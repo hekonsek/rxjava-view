@@ -4,6 +4,7 @@ import com.github.hekonsek.rxjava.event.Event;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
+import io.reactivex.functions.BiConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,8 +20,21 @@ public class MaterializeDocumentViewTransformation implements ObservableTransfor
 
     private final DocumentView view;
 
-    public MaterializeDocumentViewTransformation(DocumentView view) {
+    private final BiConsumer<Throwable, Event<Map<String, Object>>> deadLetterQueue;
+
+    public MaterializeDocumentViewTransformation(DocumentView view,
+            BiConsumer<Throwable, Event<Map<String, Object>>> deadLetterQueue) {
         this.view = view;
+        this.deadLetterQueue = deadLetterQueue;
+    }
+
+    public MaterializeDocumentViewTransformation(DocumentView view) {
+        this(view, (ex, value) -> LOG.info("Failed to save document: " + value, ex));
+    }
+
+    public static MaterializeDocumentViewTransformation materialize(DocumentView view,
+            BiConsumer<Throwable, Event<Map<String, Object>>> deadLetterQueue) {
+        return new MaterializeDocumentViewTransformation(view, deadLetterQueue);
     }
 
     public static MaterializeDocumentViewTransformation materialize(DocumentView view) {
@@ -36,7 +50,7 @@ public class MaterializeDocumentViewTransformation implements ObservableTransfor
                         return view.remove(requiredAddress(event), requiredKey(event)).toObservable();
                     }
                 },
-                failure -> LOG.info("Failed to save document: " + failure.value(), failure.cause())
+                deadLetterQueue
         ));
     }
 

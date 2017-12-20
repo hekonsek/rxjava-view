@@ -30,7 +30,6 @@
         <dependency>
             <groupId>com.github.hekonsek</groupId>
             <artifactId>rxjava-failable</artifactId>
-            <version>0.2</version>
         </dependency>
 
         <!-- Testing -->
