@@ -65,9 +65,21 @@ indicate target collection and event key respectively.
 If you would like to count the number of documents in materialized collection, use the following code:
 
 ```
-materializedView.count("collection").
-  subscribe(count -> assertThat(count).isEqualTo(3));
+Single<Long> countObservable = materializedView.count("collection");
+countObservable.subscribe(count -> 
+  assertThat(count).isEqualTo(3)
+);
 ```
+
+In order to fetch single document by key, use `findById` operation:
+
+```
+Maybe<Map<String, Object>> documentObservable = materializedView.findById("collection");
+documentObservable.subscribe(document -> 
+  assertThat(document).isInstanceOf(Map.class)
+);
+```
+
 
 ## License
 
