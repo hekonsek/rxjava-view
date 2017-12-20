@@ -27,16 +27,11 @@
         <dependency>
             <groupId>com.github.hekonsek</groupId>
             <artifactId>rxjava-event</artifactId>
-            <version>0.5</version>
         </dependency>
         <dependency>
             <groupId>com.github.hekonsek</groupId>
             <artifactId>rxjava-failable</artifactId>
             <version>0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
         </dependency>
 
         <!-- Testing -->

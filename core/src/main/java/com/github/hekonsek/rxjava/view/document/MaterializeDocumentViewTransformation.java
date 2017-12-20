@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-import static com.github.hekonsek.rxjava.event.Headers.address;
-import static com.github.hekonsek.rxjava.event.Headers.key;
+import static com.github.hekonsek.rxjava.event.Headers.requiredAddress;
+import static com.github.hekonsek.rxjava.event.Headers.requiredKey;
 import static com.github.hekonsek.rxjava.failable.FailableFlatMap.failable;
 
 public class MaterializeDocumentViewTransformation implements ObservableTransformer<Event<Map<String, Object>>, Object> {
@@ -31,9 +31,9 @@ public class MaterializeDocumentViewTransformation implements ObservableTransfor
         return events.compose(failable(
                 event -> {
                     if (event.payload() != null) {
-                        return view.save(address(event), key(event), event.payload()).toObservable();
+                        return view.save(requiredAddress(event), requiredKey(event), event.payload()).toObservable();
                     } else {
-                        return view.remove(address(event), key(event)).toObservable();
+                        return view.remove(requiredAddress(event), requiredKey(event)).toObservable();
                     }
                 },
                 failure -> LOG.info("Failed to save document: " + failure.value(), failure.cause())
