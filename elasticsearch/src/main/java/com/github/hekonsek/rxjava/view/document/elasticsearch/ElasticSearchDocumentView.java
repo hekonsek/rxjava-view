@@ -92,7 +92,7 @@ public class ElasticSearchDocumentView implements DocumentView {
                             observer.onError(e);
                         }
                     });
-                } catch (Throwable e) {
+                } catch (Exception e) {
                     observer.onError(e);
                 }
             }
